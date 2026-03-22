@@ -1,0 +1,5 @@
+scrape_configs:
+  - job_name: 'spring-boot'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['172.31.32.66:8080']
