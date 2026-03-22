@@ -1,19 +1,33 @@
 version: '3.8'
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: boaz-mysql
-    restart: always
-    environment:
-      MYSQL_DATABASE: boaz
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-0000}
-      MYSQL_CHARACTER_SET_SERVER: utf8mb4
-      MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
     ports:
-      - "3306:3306"
+      - "9090:9090"
     volumes:
-      - mysql-data:/var/lib/mysql
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-remote-write-receiver' # k6 연동 필수 옵션
+    networks:
+      - monitoring
 
-volumes:
-  mysql-data:
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    driver: bridge
