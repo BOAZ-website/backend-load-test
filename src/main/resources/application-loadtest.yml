@@ -1,0 +1,2 @@
+jwt:
+  access-token-expiration: 10800000  # 3시간 (기본 15분 → 테스트 윈도우 커버)

@@ -57,5 +57,6 @@ logs/
 ### OMC ###
 .omc/
 
-
-docs/
+### Load test artifacts ###
+k6-script/tokens.csv
+results/

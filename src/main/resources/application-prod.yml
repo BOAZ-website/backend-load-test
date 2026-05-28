@@ -99,10 +99,12 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health, prometheus
   endpoint:
     health:
       show-details: never
+    prometheus:
+      enabled: true
 
 cookie:
   same-site: Strict
