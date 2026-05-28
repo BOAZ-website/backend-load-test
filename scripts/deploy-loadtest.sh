@@ -3,11 +3,15 @@ set -e
 
 HOSTS=("boaz-api-prod-A" "boaz-api-prod-B")
 
-echo "=== 1. jar 빌드 (테스트 제외) ==="
-./gradlew build -x test
+JAR=$(ls build/libs/*.jar 2>/dev/null | grep -v plain | head -1)
 
-JAR=$(ls build/libs/*.jar | grep -v plain | head -1)
-echo "빌드 완료: $JAR"
+if [ -z "$JAR" ]; then
+    echo "[ERROR] build/libs/ 에 jar가 없습니다."
+    echo "  먼저 빌드를 실행하세요: ./gradlew build -x test"
+    exit 1
+fi
+
+echo "배포할 jar: $JAR"
 
 for HOST in "${HOSTS[@]}"; do
     echo ""
