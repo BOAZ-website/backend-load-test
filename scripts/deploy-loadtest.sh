@@ -3,7 +3,7 @@ set -e
 
 PEM="$HOME/.ssh/boaz_codedeploy.pem"
 SSH_OPTS="-i $PEM -o StrictHostKeyChecking=no"
-HOSTS=("ubuntu@15.165.102.5" "ubuntu@13.209.22.109")
+HOSTS=("ubuntu@15.165.102.5" "ubuntu@43.201.105.117")
 
 JAR=$(ls build/libs/*.jar 2>/dev/null | grep -v plain | head -1)
 
