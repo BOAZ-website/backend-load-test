@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
 
-HOSTS=("boaz-api-prod-A" "boaz-api-prod-B")
+PEM="$HOME/.ssh/boaz_codedeploy.pem"
+SSH_OPTS="-i $PEM -o StrictHostKeyChecking=no"
+HOSTS=("ubuntu@15.165.102.5" "ubuntu@13.209.22.109")
 
 JAR=$(ls build/libs/*.jar 2>/dev/null | grep -v plain | head -1)
 
@@ -18,13 +20,13 @@ for HOST in "${HOSTS[@]}"; do
     echo "=== [$HOST] 배포 ==="
 
     echo "  jar 전송..."
-    scp "$JAR" "$HOST:/tmp/app-loadtest.jar"
+    scp $SSH_OPTS "$JAR" "$HOST:/tmp/app-loadtest.jar"
 
     echo "  start-loadtest.sh 전송..."
-    scp scripts/start-loadtest.sh "$HOST:/tmp/start-loadtest.sh"
+    scp $SSH_OPTS scripts/start-loadtest.sh "$HOST:/tmp/start-loadtest.sh"
 
     echo "  원본 백업 → 교체 → 서비스 재시작..."
-    ssh "$HOST" bash <<'REMOTE'
+    ssh $SSH_OPTS "$HOST" bash <<'REMOTE'
 set -e
 sudo cp -f /opt/boaz/app.jar              /opt/boaz/app-prod-backup.jar
 sudo cp -f /opt/boaz/scripts/start.sh     /opt/boaz/scripts/start-prod-backup.sh

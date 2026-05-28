@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
 
-HOSTS=("boaz-api-prod-A" "boaz-api-prod-B")
+PEM="$HOME/.ssh/boaz_codedeploy.pem"
+SSH_OPTS="-i $PEM -o StrictHostKeyChecking=no"
+HOSTS=("ubuntu@15.165.102.5" "ubuntu@13.209.22.109")
 
 echo "=== prod 복구 시작 ==="
 
@@ -9,7 +11,7 @@ for HOST in "${HOSTS[@]}"; do
     echo ""
     echo "=== [$HOST] 복구 ==="
 
-    ssh "$HOST" bash <<'REMOTE'
+    ssh $SSH_OPTS "$HOST" bash <<'REMOTE'
 set -e
 if [ ! -f /opt/boaz/app-prod-backup.jar ]; then
     echo "[ERROR] 백업 jar 없음 (/opt/boaz/app-prod-backup.jar). CI/CD 재배포로 복구하세요."
